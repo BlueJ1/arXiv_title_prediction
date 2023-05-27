@@ -8,12 +8,12 @@ import os
 
 def generate_data_batches(filename, chunk_dir):
     """
-    Takes the data provided in filename and sequentially reads it in 100k-sized chunks.
+    Takes the data provided in filename and sequentially reads it in 10k-sized chunks.
     These chunks are then filtered for rows where the abstract has between 100 and 250 tokens and the title has between
     10 and 30 tokens. The real tokenized sequence length may still vary, as this depends on specific tokenizer which is
     used. Default is the one for the e5-base-v2 model (so maybe could be rerun for and with different tokenizers - this
     requires a little bit of refactoring of the code).
-    On average, 40-50% of the data is eliminated, leaving chunks of 40k to 50k to be written into a single file.
+    On average, 40-50% of the data is eliminated, leaving chunks of 4k to 5k to be written into a single file.
 
     :param filename: str; Reference to data file
     :param chunk_dir: str; Directory to store the filtered chunks in
@@ -24,7 +24,7 @@ def generate_data_batches(filename, chunk_dir):
     # I use the e5-base-v2 tokenizer to determine the token length for any piece of text
     tokenizer = AutoTokenizer.from_pretrained('intfloat/e5-base-v2')
     i = 0
-    for chunk in pd.read_json(filename, lines=True, chunksize=100000):
+    for chunk in pd.read_json(filename, lines=True, chunksize=10000):
         chunk: pd.DataFrame  # this does nothing - it's just type annotation for the IDE
         chunk = chunk[["title", "abstract"]]
         title_batch_dict = tokenizer(chunk["title"].tolist(), max_length=512, padding=True, truncation=True,
@@ -48,4 +48,5 @@ def generate_data_batches(filename, chunk_dir):
         i += 1
 
 
-generate_data_batches("arxiv_all_data.json", "data_chunks")
+if __name__ == "__main__":
+    generate_data_batches("arxiv_all_data.json", "data_chunks")

@@ -19,7 +19,7 @@ def average_pool(last_hidden_states: Tensor,
 
 
 print("loading data...")
-arxiv_df = pd.read_csv("arxiv_first_100k.csv")
+arxiv_df = pd.read_csv("data_chunks/chunk_0.csv")
 print("loaded data")
 
 # Each input text should start with "query: " or "passage: ".
@@ -45,6 +45,7 @@ for i in tqdm(range(max_batches)):
     # t = time()
     # Tokenize the input texts
     batch_dict = tokenizer(batch_data, max_length=512, padding=True, truncation=True, return_tensors='pt')
+    print(type(batch_dict[:5]))
     batch_dict.to("mps")
     # print(batch_dict["input_ids"].shape)
 

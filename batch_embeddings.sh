@@ -5,5 +5,5 @@
 #SBATCH --job-name=python_example
 #SBATCH --mem=8192
 module load PyTorch
-conda activate nlp
+source $HOME/.envs/nlp/bin/activate
 python embeddings_from_filtered_raw_data.py

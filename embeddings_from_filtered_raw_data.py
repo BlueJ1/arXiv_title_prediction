@@ -17,7 +17,10 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModel.from_pretrained(model_name)
-    model.to("mps")
+    if torch.backends.mps.is_available():
+        model.to("mps")
+    elif torch.cuda.is_available():
+        model.to("cuda")
 
     if not os.path.exists(embedding_chunks_dir):
         os.mkdir(embedding_chunks_dir)
@@ -25,13 +28,16 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
     for chunk_filename in chunk_filenames:
         chunk_df = pd.read_csv(chunk_filename)["abstract"].tolist()
         tokenized_dict = tokenizer(chunk_df, max_length=250, padding=True, truncation=True, return_tensors='pt')
-        tokenized_dict.to("mps")
+        if torch.backends.mps.is_available():
+            tokenized_dict.to("mps")
+        elif torch.cuda.is_available():
+            tokenized_dict.to("cuda")
 
-        embeddings = np.ndarray((len(chunk_df), 250, 1024), dtype=np.float32)
+        embeddings = np.ndarray((len(chunk_df), 250, 1024), dtype=np.float16)
         data_length = len(chunk_df)
         batch_size = 8
         n_batches = data_length // batch_size
-        max_batches = min(n_batches, 5)
+        max_batches = min(n_batches, np.inf)
 
         for i in tqdm(range(max_batches)):
             batch_dict = {k: v[i * batch_size: (i + 1) * batch_size] for k, v in tokenized_dict.items()}

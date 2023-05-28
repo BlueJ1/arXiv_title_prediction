@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 
 from tqdm import tqdm
+from time import time
 import os
 
 
@@ -35,10 +36,11 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
 
         embeddings = np.ndarray((len(chunk_df), 250, 1024), dtype=np.float16)
         data_length = len(chunk_df)
-        batch_size = 8
+        batch_size = 16
         n_batches = data_length // batch_size
         max_batches = min(n_batches, np.inf)
 
+        t = time()
         for i in tqdm(range(max_batches)):
             batch_dict = {k: v[i * batch_size: (i + 1) * batch_size] for k, v in tokenized_dict.items()}
 
@@ -46,8 +48,10 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
             embedding = outputs.last_hidden_state.masked_fill(~batch_dict["attention_mask"][..., None].bool(), 0.0)
             embeddings[i * batch_size: (i + 1) * batch_size] = embedding.cpu().detach().numpy()
 
+        print(f'total time for this chunk: {time() - t}')
+
         np.save(embedding_chunks_dir + "/" + chunk_filename.split("/")[-1].split(".")[0] + ".npy", embeddings)
 
 
 if __name__ == "__main__":
-    embeddings_from_filtered_raw_data("data_chunks", n_chunks=None, embedding_chunks_dir="abstract_embeddings")
+    embeddings_from_filtered_raw_data("data_chunks", n_chunks=2, embedding_chunks_dir="abstract_embeddings")

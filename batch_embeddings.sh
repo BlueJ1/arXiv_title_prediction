@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --time=00:00:20
+#SBATCH --time=00:15:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --job-name=python_example
-#SBATCH --mem=1024
+#SBATCH --mem=8192
 module load PyTorch
 conda activate nlp
-python pytorch_gpu_example.py
+python embeddings_from_filtered_raw_data.py

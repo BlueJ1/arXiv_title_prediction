@@ -1,8 +1,7 @@
 #!/bin/bash
-#SBATCH --time=00:01:00
-#SBATCH --nodes=1
+#SBATCH --time=00:10:00
 #SBATCH --ntasks=1
-#SBATCH --job-name=python_example
-#SBATCH --mem=800
-Python/3.10.8-GCCcore-12.2.0
-python python_example.py
+#SBATCH --job-name=generate_data_batches
+conda activate nlp
+module load PyTorch
+python generate_data_batches.py

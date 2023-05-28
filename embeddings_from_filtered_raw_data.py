@@ -41,7 +41,6 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
 
         for i in tqdm(range(max_batches)):
             batch_dict = {k: v[i * batch_size: (i + 1) * batch_size] for k, v in tokenized_dict.items()}
-            # batch_dict = tokenized_dict[i * batch_size: (i + 1) * batch_size]
 
             outputs = model(**batch_dict)
             embedding = outputs.last_hidden_state.masked_fill(~batch_dict["attention_mask"][..., None].bool(), 0.0)

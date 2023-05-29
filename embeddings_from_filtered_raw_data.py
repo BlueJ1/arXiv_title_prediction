@@ -43,9 +43,9 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
             tokenized_dict.to("cuda")
         tokenized_dict = Accelerator().prepare(tokenized_dict)
 
-        embeddings = np.ndarray((len(chunk_df), 250, 1024), dtype=np.float32)
+        embeddings = torch.empty((len(chunk_df), 250, 1024), dtype=torch.float16)
         data_length = len(chunk_df)
-        batch_size = 12
+        batch_size = 32
         n_batches = data_length // batch_size
         max_batches = min(n_batches, np.inf)
 
@@ -54,11 +54,11 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
 
             outputs = model(**batch_dict)
             embedding = outputs.last_hidden_state.masked_fill(~batch_dict["attention_mask"][..., None].bool(), 0.0)
-            embeddings[i * batch_size: (i + 1) * batch_size] = embedding.cpu().detach().numpy()
+            embeddings[i * batch_size: (i + 1) * batch_size] = embedding.cpu().detach()
 
         np.save(embedding_chunks_dir + "/" + chunk_filename.split("/")[-1].split(".")[0] + ".npy", embeddings)
         print(f'total time for this chunk: {time() - t}')
 
 
 if __name__ == "__main__":
-    embeddings_from_filtered_raw_data("data_chunks", n_chunks=6, embedding_chunks_dir="abstract_embeddings")
+    embeddings_from_filtered_raw_data("data_chunks", n_chunks=1, embedding_chunks_dir="abstract_embeddings")

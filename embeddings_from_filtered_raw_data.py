@@ -12,7 +12,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"  # suppresses huggingface warning
 
 
 def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_chunks_dir="abstract_embeddings",
-                                      model_name="intfloat/e5-base-v2"):
+                                      model_name="intfloat/e5-large-v2"):
     if n_chunks is None:
         chunk_filenames = [data_chunks_dir + "/chunk_" + str(i) for i in range(len(os.listdir(data_chunks_dir)) - 1)]
     else:
@@ -43,7 +43,7 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
             tokenized_dict.to("cuda")
         tokenized_dict = Accelerator().prepare(tokenized_dict)
 
-        embeddings = np.ndarray((len(chunk_df), 250, 768), dtype=np.float16)
+        embeddings = np.ndarray((len(chunk_df), 250, 1024), dtype=np.float16)
         data_length = len(chunk_df)
         batch_size = 2
         n_batches = data_length // batch_size

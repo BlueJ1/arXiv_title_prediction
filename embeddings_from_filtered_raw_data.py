@@ -45,7 +45,7 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
 
         embeddings = np.ndarray((len(chunk_df), 250, 1024), dtype=np.float16)
         data_length = len(chunk_df)
-        batch_size = 2
+        batch_size = 8
         n_batches = data_length // batch_size
         max_batches = min(n_batches, np.inf)
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=00:02:00
+#SBATCH --time=00:04:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --job-name=embeddings

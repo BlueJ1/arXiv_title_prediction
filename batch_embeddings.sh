@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=00:03:30
+#SBATCH --time=00:02:00
 #SBATCH --partition=gpu
 #SBATCH --gpus-per-node=a100:1
 #SBATCH --job-name=embeddings

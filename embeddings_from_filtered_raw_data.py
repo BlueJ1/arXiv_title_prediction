@@ -43,9 +43,9 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
             tokenized_dict.to("cuda")
         tokenized_dict = Accelerator().prepare(tokenized_dict)
 
-        embeddings = torch.empty((len(chunk_df), 250, 1024), dtype=torch.float16)
+        embeddings = torch.empty((len(chunk_df), 250, 1024), dtype=torch.float32)
         data_length = len(chunk_df)
-        batch_size = 32
+        batch_size = 128
         n_batches = data_length // batch_size
         max_batches = min(n_batches, np.inf)
 

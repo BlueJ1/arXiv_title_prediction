@@ -45,7 +45,7 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
 
         embeddings = torch.empty((len(chunk_df), 250, 1024), dtype=torch.float32)
         data_length = len(chunk_df)
-        batch_size = 32
+        batch_size = 64
         n_batches = data_length // batch_size
         max_batches = min(n_batches, np.inf)
 

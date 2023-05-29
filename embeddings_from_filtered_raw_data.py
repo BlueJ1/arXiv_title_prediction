@@ -22,11 +22,11 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModel.from_pretrained(model_name)
     print("Downloaded.")
-    # if torch.backends.mps.is_available():
-    #     model.to("mps")
-    # elif torch.cuda.is_available():
-    print("converting model to cuda")
-    model.to("cuda")
+    if torch.backends.mps.is_available():
+        model.to("mps")
+    elif torch.cuda.is_available():
+        print("converting model to cuda")
+        model.to("cuda")
     model = Accelerator().prepare(model)
 
     if not os.path.exists(embedding_chunks_dir):
@@ -36,11 +36,11 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
         t = time()
         chunk_df = pd.read_csv(chunk_filename)["abstract"].tolist()
         tokenized_dict = tokenizer(chunk_df, max_length=250, padding=True, truncation=True, return_tensors='pt')
-        # if torch.backends.mps.is_available():
-        #     tokenized_dict.to("mps")
-        # elif torch.cuda.is_available():
-        print("converting tokenized_dict to cuda")
-        tokenized_dict.to("cuda")
+        if torch.backends.mps.is_available():
+            tokenized_dict.to("mps")
+        elif torch.cuda.is_available():
+            print("converting tokenized_dict to cuda")
+            tokenized_dict.to("cuda")
         tokenized_dict = Accelerator().prepare(tokenized_dict)
 
         embeddings = np.ndarray((len(chunk_df), 250, 768), dtype=np.float16)

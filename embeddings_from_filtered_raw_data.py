@@ -61,4 +61,4 @@ def embeddings_from_filtered_raw_data(data_chunks_dir, n_chunks=None, embedding_
 
 
 if __name__ == "__main__":
-    embeddings_from_filtered_raw_data("data_chunks", n_chunks=1, embedding_chunks_dir="abstract_embeddings")
+    embeddings_from_filtered_raw_data("data_chunks", n_chunks=6, embedding_chunks_dir="abstract_embeddings")

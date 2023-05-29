@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --time=00:03:00
+#SBATCH --time=00:20:00
 #SBATCH --partition=gpu
-#SBATCH --gpus-per-node=a100:2
+#SBATCH --gpus-per-node=a100:1
 #SBATCH --job-name=embeddings
-#SBATCH --mem=8000
+#SBATCH --mem=12000
 
 module load PyTorch
 source $HOME/.envs/nlp/bin/activate
